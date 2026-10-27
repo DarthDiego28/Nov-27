@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misión Especial: Cita 27 de Noviembre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Canvas de Fondo Estelar HD -->
+    <canvas id="starfield"></canvas>
+
+    <!-- Fondo Principal Dinámico con imágenes de sustitución confiables (Fallback Web) -->
+    <div id="bgLayer" class="bg-layer" style="background-image: url('Background/1.png'), url('https://images.unsplash.com/photo-1532693322450-2cb5c511067d?auto=format&fit=crop&w=1920&q=80');"></div>
+
+    <!-- Etiqueta de Control de Misión -->
+    <div id="spaceLocationTag" class="space-location-tag">
+        <span class="loc-icon">🔭</span> <span id="locName">FASE 1: EXPEDICIÓN AMOROSA</span>
+    </div>
+
+    <!-- Banner de Transición de Categoría (Fase 6) -->
+    <div id="categoryTransitionBanner" class="category-transition-banner">
+        <div class="cat-banner-content">
+            <span class="cat-star">✦</span>
+            <h3 id="catBannerText">¡COMPLETADO!</h3>
+            <p>Siguiente categoría en progreso...</p>
+        </div>
+    </div>
+
+    <!-- Audio Control -->
+    <button class="audio-btn" id="musicToggle">
+        <span id="musicIcon">🔊</span> <span id="musicText">MÚSICA: OFF</span>
+    </button>
+    <audio id="bgMusic" loop src="music.mp3"></audio>
+
+    <div class="app-container">
+
+        <!-- FASE 1 -->
+        <div class="phase-card active" id="phase1">
+            <div class="luxury-badge">27 de Octubre 2026</div>
+            <h1>8 Meses de Novios</h1>
+            <div class="divider-gold"></div>
+            <p class="subtitle">Hoy celebramos 8 meses de novios y 11 meses desde que nos reencontramos y enamoramos aquel 27 de noviembre del 2024 en el Museo Nacional de Antropología.</p>
+            <p class="subtitle">Presiona el botón para iniciar.</p>
+            
+            <button class="btn-luxury" onclick="goToPhase(2, 'Background/2.jpg', 'FASE 2: SELECCIÓN EXCLUSIVA')">
+                <span>INICIAR</span>
+            </button>
+        </div>
+
+        <!-- FASE 2 -->
+        <div class="phase-card" id="phase2">
+            <div class="luxury-badge">SELECCIÓN EXCLUSIVA</div>
+            <h2>Has sido Seleccionada</h2>
+            <div class="divider-gold"></div>
+            
+            <div class="sharon-photo-container">
+                <img src="Background/x.gif" alt="Sharon Foto Fase 2" class="sharon-photo-frame" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';">
+            </div>
+
+            <p class="subtitle">Desde hace 11 meses fuiste seleccionada para una aventura que durará el resto de nuestra vida.</p>
+            <p class="subtitle">Ahora tienes una tarea muy importante que es seguir detalladamente las instrucciones por favor.</p>
+            <button class="btn-luxury" onclick="goToPhase(3, 'Background/3.jpg', 'FASE 3: REGISTRO DE MISIÓN')">
+                <span>CONTINUAR</span>
+            </button>
+        </div>
+
+        <!-- FASE 3 -->
+        <div class="phase-card" id="phase3">
+            <div class="luxury-badge">REGISTRO</div>
+            <h2>Ficha de Identificación</h2>
+            <div class="divider-gold"></div>
+            
+            <form id="missionForm" onsubmit="event.preventDefault(); validateForm();">
+                <div class="form-group">
+                    <label>NOMBRE COMPLETO</label>
+                    <input type="text" id="userName" value="Sharon Gissela Rivas González" placeholder="Tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label>CORREO ELECTRÓNICO *</label>
+                    <input type="email" id="userEmail" placeholder="ejemplo@correo.com" required>
+                    <small id="emailError" class="input-error-msg">Por favor ingresa un correo electrónico válido.</small>
+                </div>
+                <div class="form-group">
+                    <label>FOTO actual</label>
+                    <label class="file-label" for="userPhoto">
+                        <span class="file-icon">📷</span>
+                        <span class="file-text" id="photoPreviewText">Seleccionar Fotografía</span>
+                        <input type="file" id="userPhoto" name="photo" accept="image/*" onchange="previewFile(this, 'photoPreviewText')">
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>Currículum</label>
+                    <label class="file-label" for="userCV">
+                        <span class="file-icon">📄</span>
+                        <span class="file-text" id="cvPreviewText">Adjuntar Documento CV</span>
+                        <input type="file" id="userCV" name="cv" accept=".pdf,.doc,.docx" onchange="previewFile(this, 'cvPreviewText')">
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-luxury">
+                    <span>ENVIAR SOLICITUD</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- FASE 4 -->
+        <div class="phase-card" id="phase4">
+            <div class="luxury-badge">CONFIRMACIÓN REQUERIDA</div>
+            <h2>¿Aseguras que los datos son correctos?</h2>
+            <div class="divider-gold"></div>
+            <p class="subtitle">Esta tarea culminará el 27 de noviembre del 2026, siendo una cita. ¿Aceptas?</p>
+            <div class="btn-group">
+                <button class="btn-luxury" onclick="goToPhase(5, 'Background/5.jpg', 'FASE 5: MENSAJE CONFIDENCIAL')">
+                    <span>SÍ, ACEPTO</span>
+                </button>
+                <button class="btn-luxury btn-no" id="noBtn1" onclick="rejectAction('noBtn1')">
+                    <span>NO</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- FASE 5 -->
+        <div class="phase-card" id="phase5">
+            <div class="luxury-badge">MENSAJE CONFIDENCIAL</div>
+            <h2>Para mi Púlsar</h2>
+            <div class="divider-gold"></div>
+            <p class="subtitle">Todos los días han sido hermosos desde el 27 de noviembre del 2025 porque estás tú en mi vida y te convertiste en mi lugar seguro.</p>
+            <p class="subtitle">Ahora, necesito que me ayudes a diseñar un plan maravilloso. Además de hermosa ¿Estás lista?</p>
+            <div class="sharon-photo-container">
+                <img src="Background/9.jpg" alt="Sharon Foto Fase 2" class="sharon-photo-frame" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';">
+            </div>
+            <button class="btn-luxury" onclick="goToPhase('6_mode', 'Background/6.jpg', 'FASE 6: ESTILO DE EXPEDICIÓN')">
+                <span>¡Lista!</span>
+            </button>
+        </div>
+
+        <!-- FASE 6_MODE -->
+        <div class="phase-card" id="phase6_mode">
+            <div class="luxury-badge">Tipo de plan</div>
+            <h2>¿Qué te gusta más?</h2>
+            <div class="divider-gold"></div>
+            <div class="btn-group vertical">
+                <button class="btn-luxury full-width" onclick="selectMode('casa')">
+                    <span>🏡 NOCHE EN EL DEPA</span>
+                </button>
+                <button class="btn-luxury full-width" onclick="selectMode('salir')">
+                    <span>🚀 HAY QUE SALIR</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- FASE 6_TOURNAMENT -->
+        <div class="phase-card" id="phase6_tournament">
+            <div class="luxury-badge" id="categoryTitle">CATEGORÍA</div>
+            <h2>Elige tu Preferida</h2>
+            <div class="divider-gold"></div>
+            <div class="tournament-box">
+                <div class="option-card" id="optA" onclick="pickOption('A')">
+                    <span class="opt-content" id="optAText">Opción A</span>
+                </div>
+                <div class="option-card" id="optB" onclick="pickOption('B')">
+                    <span class="opt-content" id="optBText">Opción B</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- FASE 7 -->
+        <div class="phase-card" id="phase7">
+            <div class="luxury-badge">VERIFICACIÓN FINAL</div>
+            <h2>¿Confirmas tu Elección?</h2>
+            <div class="divider-gold"></div>
+            <p class="subtitle">El itinerario espacial está listo para ser guardado.</p>
+            <div class="btn-group">
+                <button class="btn-luxury" onclick="goToPhase(8, 'Background/7.jpg', 'FASE 8: PASAPORTE INTERESTELAR')">
+                    <span>ACEPTAR Y GUARDAR</span>
+                </button>
+                <button class="btn-luxury btn-no" id="noBtn2" onclick="rejectAction('noBtn2')">
+                    <span>CANCELAR</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- FASE 8 -->
+        <div class="phase-card" id="phase8">
+            <div class="luxury-badge">Resumen</div>
+            <h2>Cita Confirmada</h2>
+            <div class="divider-gold"></div>
+
+            <div class="badge-card">
+                <div class="badge-header">
+                    <div class="photo-img">
+                        <img id="badgeImg" src="Background/9.jpg" alt="Sharon Foto Fase 8" onerror="this.onerror=null; this.src='Background/9.jpg';">
+                    </div>
+                    <div class="badge-user-info">
+                        <h3 id="badgeName">Sharon Gissela Rivas González</h3>
+                        <span class="badge-role">Mi lic.</span>
+                    </div>
+                </div>
+                <div class="badge-date-tag">✦ 27 DE NOVIEMBRE DE 2026 (TODO EL DÍA) ✦</div>
+                <ul class="itinerary-list" id="finalItinerary"></ul>
+            </div>
+
+            <button class="btn-luxury full-width margin-b" onclick="openGoogleCalendar()">
+                <span>📅 AGENDAR EN GOOGLE CALENDAR</span>
+            </button>
+            <button class="btn-luxury full-width whatsapp-btn" onclick="sendWhatsApp()">
+                <span>💬 ENVIAR ITINERARIO POR WHATSAPP</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
